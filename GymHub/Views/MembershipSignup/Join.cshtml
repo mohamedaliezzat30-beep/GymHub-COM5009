@@ -1,0 +1,101 @@
+﻿@model GymHub.Models.Membership
+
+@{
+    ViewData["Title"] = "Join GymHub";
+}
+
+<h1>Join GymHub</h1>
+
+<p class="text-muted">
+    Complete the form below to become a GymHub member.
+</p>
+
+<div class="row mb-4">
+
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+                <h3>Basic</h3>
+                <h4>£19.99/month</h4>
+                <p>Gym access during standard opening hours.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-warning">
+            <div class="card-body text-center">
+                <h3>Premium</h3>
+                <h4>£34.99/month</h4>
+                <p>Gym access, classes, and fitness content.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+                <h3>VIP</h3>
+                <h4>£49.99/month</h4>
+                <p>Premium features, trainer support, and priority booking.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<form asp-action="Join" method="post" class="col-md-6">
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group mb-3">
+        <label asp-for="MemberName">Full Name</label>
+        <input asp-for="MemberName" class="form-control" />
+        <span asp-validation-for="MemberName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="MembershipType">Membership Type</label>
+        <select asp-for="MembershipType" class="form-control" id="membershipType">
+            <option value="">-- Select Membership Type --</option>
+            <option value="Basic">Basic - £19.99</option>
+            <option value="Premium">Premium - £34.99</option>
+            <option value="VIP">VIP - £49.99</option>
+        </select>
+        <span asp-validation-for="MembershipType" class="text-danger"></span>
+    </div>
+
+    <div class="alert alert-info" id="membershipInfo">
+        Select a membership type to see what is included.
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Confirm Membership
+    </button>
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.getElementById("membershipType").addEventListener("change", function () {
+            var infoBox = document.getElementById("membershipInfo");
+
+            if (this.value === "Basic") {
+                infoBox.innerHTML = "Basic includes gym access during standard opening hours.";
+            }
+            else if (this.value === "Premium") {
+                infoBox.innerHTML = "Premium includes gym access, group classes, and fitness content.";
+            }
+            else if (this.value === "VIP") {
+                infoBox.innerHTML = "VIP includes Premium features, trainer support, and priority booking.";
+            }
+            else {
+                infoBox.innerHTML = "Select a membership type to see what is included.";
+            }
+        });
+    </script>
+}

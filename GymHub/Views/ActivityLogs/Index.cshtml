@@ -1,0 +1,58 @@
+﻿@model IEnumerable<GymHub.Models.ActivityLog>
+
+@{
+    ViewData["Title"] = "Activity Log";
+}
+
+<h1 class="mb-4">Activity Log</h1>
+
+<p class="text-muted">
+    This page shows recent actions completed inside GymHub.
+</p>
+
+@if (Model.Any())
+{
+    <form asp-action="Clear"
+          method="post"
+          class="mb-3">
+
+        <button type="submit"
+                class="btn btn-danger"
+                onclick="return confirm('Are you sure you want to clear all activity logs?');">
+            Clear Activity Logs
+        </button>
+
+    </form>
+}
+
+<table class="table table-hover shadow-sm bg-white">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Action</th>
+            <th>Date Created</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="3" class="text-muted text-center">
+                    No activity logs available.
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.UserEmail</td>
+                    <td>@item.Action</td>
+                    <td>@item.DateCreated.ToString("dd/MM/yyyy HH:mm")</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

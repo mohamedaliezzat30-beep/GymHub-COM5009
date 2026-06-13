@@ -1,0 +1,87 @@
+﻿@model GymHub.Models.GymClass
+
+@{
+    ViewData["Title"] = "Edit Scheduled Class";
+}
+
+<h1>Edit Scheduled Class</h1>
+
+<p class="text-muted">
+    Update class session information.
+</p>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+
+        <form asp-action="Edit">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="GymClassId" />
+
+            <div class="form-group mb-3">
+                <label asp-for="ClassName" class="control-label">Class Name</label>
+                <input asp-for="ClassName" class="form-control" />
+                <span asp-validation-for="ClassName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="ClassDate" class="control-label">Class Date</label>
+                <input asp-for="ClassDate" class="form-control" type="date" />
+                <span asp-validation-for="ClassDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="StartTime" class="control-label">Start Time</label>
+                <input asp-for="StartTime" class="form-control" type="time" />
+                <span asp-validation-for="StartTime" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="EndTime" class="control-label">End Time</label>
+                <input asp-for="EndTime" class="form-control" type="time" />
+                <span asp-validation-for="EndTime" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Instructor" class="control-label">Instructor</label>
+                <input asp-for="Instructor" class="form-control" />
+                <span asp-validation-for="Instructor" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="DifficultyLevel" class="control-label">Difficulty Level</label>
+
+                <select asp-for="DifficultyLevel" class="form-control">
+                    <option value="">-- Select Difficulty --</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                </select>
+
+                <span asp-validation-for="DifficultyLevel" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Capacity" class="control-label">Capacity</label>
+                <input asp-for="Capacity" class="form-control" />
+                <span asp-validation-for="Capacity" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Save Changes" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

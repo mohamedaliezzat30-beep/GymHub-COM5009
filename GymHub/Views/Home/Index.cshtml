@@ -1,0 +1,318 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="bg-dark text-light p-5 rounded shadow-sm mb-5">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1 class="display-4 fw-bold">Train Smarter with GymHub</h1>
+
+            <p class="lead mt-3">
+                Join GymHub, manage your membership, book fitness classes, and access workout content in one place.
+            </p>
+
+            <p>
+                GymHub was developed by <strong>Mohamed Abdelrahman</strong> as part of <strong>COM5009 – Web Applications Development</strong>.
+                It supports member registration, membership plans, class bookings, fitness content,
+                admin management, and activity logging.
+            </p>
+
+            <div class="mt-4">
+                @if (User.Identity == null || !User.Identity.IsAuthenticated)
+                {
+                    <a asp-area="Identity"
+                       asp-page="/Account/Register"
+                       class="btn btn-primary btn-lg me-2">
+                        Create Account
+                    </a>
+                }
+
+                <a asp-controller="MembershipSignup"
+                   asp-action="Join"
+                   class="btn btn-success btn-lg me-2">
+                    Join GymHub
+                </a>
+
+                <a asp-controller="GymClasses"
+                   asp-action="Index"
+                   class="btn btn-outline-light btn-lg">
+                    View Classes
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-4 mt-4 mt-md-0">
+            <div class="card text-dark shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">Member Journey</h3>
+
+                    <ol class="mb-0">
+                        <li>Create an account</li>
+                        <li>Choose a membership</li>
+                        <li>Book classes</li>
+                        <li>Access fitness content</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-5">
+    <h2 class="text-center mb-4">Membership Options</h2>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h3>Basic</h3>
+                    <h4 class="text-primary">£19.99/month</h4>
+
+                    <p class="text-muted">
+                        A simple plan for members who want gym access and basic fitness support.
+                    </p>
+
+                    <ul class="list-unstyled">
+                        <li>Gym access</li>
+                        <li>Fitness content</li>
+                    </ul>
+
+                    <a asp-controller="MembershipSignup"
+                       asp-action="Join"
+                       class="btn btn-outline-primary">
+                        Choose Basic
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 border-warning">
+                <div class="card-body text-center">
+                    <span class="badge bg-warning text-dark mb-2">Popular</span>
+
+                    <h3>Premium</h3>
+                    <h4 class="text-warning">£34.99/month</h4>
+
+                    <p class="text-muted">
+                        Best for regular members who want access to classes and fitness content.
+                    </p>
+
+                    <ul class="list-unstyled">
+                        <li>Gym access</li>
+                        <li>Class bookings</li>
+                        <li>Fitness content</li>
+                    </ul>
+
+                    <a asp-controller="MembershipSignup"
+                       asp-action="Join"
+                       class="btn btn-warning">
+                        Choose Premium
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h3>VIP</h3>
+                    <h4 class="text-dark">£49.99/month</h4>
+
+                    <p class="text-muted">
+                        Full support for members who want priority booking and trainer support.
+                    </p>
+
+                    <ul class="list-unstyled">
+                        <li>All Premium features</li>
+                        <li>Priority booking</li>
+                        <li>Trainer support</li>
+                    </ul>
+
+                    <a asp-controller="MembershipSignup"
+                       asp-action="Join"
+                       class="btn btn-outline-dark">
+                        Choose VIP
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="mb-5">
+    <h2 class="text-center mb-4">Explore GymHub</h2>
+
+    <div class="row g-4 text-center">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>My Membership</h5>
+                    <p class="text-muted">
+                        View your active membership, expiry date, and change your plan.
+                    </p>
+
+                    <a asp-controller="MyMembership"
+                       asp-action="Index"
+                       class="btn btn-sm btn-outline-primary">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>Class Schedule</h5>
+                    <p class="text-muted">
+                        View available classes, dates, instructors, and remaining spaces.
+                    </p>
+
+                    <a asp-controller="GymClasses"
+                       asp-action="Index"
+                       class="btn btn-sm btn-outline-success">
+                        View Classes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>My Bookings</h5>
+                    <p class="text-muted">
+                        Book, edit, and cancel your class reservations.
+                    </p>
+
+                    <a asp-controller="Bookings"
+                       asp-action="Index"
+                       class="btn btn-sm btn-outline-warning">
+                        View Bookings
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>Fitness Content</h5>
+                    <p class="text-muted">
+                        Access uploaded workout guides and fitness content.
+                    </p>
+
+                    <a asp-controller="FitnessContents"
+                       asp-action="Index"
+                       class="btn btn-sm btn-outline-info">
+                        View Content
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Admin Management</h2>
+
+        <div class="row g-4 text-center">
+
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100 border-primary">
+                    <div class="card-body">
+                        <h5>Manage Memberships</h5>
+                        <p class="text-muted">
+                            View and manage all membership records.
+                        </p>
+
+                        <a asp-controller="Memberships"
+                           asp-action="Index"
+                           class="btn btn-sm btn-primary">
+                            Manage
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100 border-success">
+                    <div class="card-body">
+                        <h5>Manage Classes</h5>
+                        <p class="text-muted">
+                            Add, edit, and remove scheduled classes.
+                        </p>
+
+                        <a asp-controller="GymClasses"
+                           asp-action="Index"
+                           class="btn btn-sm btn-success">
+                            Manage
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100 border-warning">
+                    <div class="card-body">
+                        <h5>Manage Bookings</h5>
+                        <p class="text-muted">
+                            View bookings and remove cancelled records.
+                        </p>
+
+                        <a asp-controller="Bookings"
+                           asp-action="Index"
+                           class="btn btn-sm btn-warning">
+                            Manage
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100 border-danger">
+                    <div class="card-body">
+                        <h5>Activity Log</h5>
+                        <p class="text-muted">
+                            Review recent system activity and clear logs.
+                        </p>
+
+                        <a asp-controller="ActivityLogs"
+                           asp-action="Index"
+                           class="btn btn-sm btn-danger">
+                            View Logs
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+}
+
+<section class="card shadow-sm mb-5">
+    <div class="card-body">
+        <h2>About This Project</h2>
+
+        <p>
+            Developed by <strong>Mohamed Abdelrahman</strong> for
+            <strong>COM5009 – Web Applications Development</strong>.
+        </p>
+
+        <p>
+            GymHub was developed as part of <strong>COM5009 – Web Applications Development</strong>.
+            The system demonstrates ASP.NET Core MVC, Entity Framework Core, SQL Server,
+            Code First model creation, scaffolded CRUD functionality, database migrations,
+            data annotations, seeded data, authentication, role-based access control,
+            image upload, membership management, booking rules, capacity checking,
+            and activity logging.
+        </p>
+    </div>
+</section>

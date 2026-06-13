@@ -1,0 +1,142 @@
+﻿@model IEnumerable<GymHub.Models.Booking>
+
+@{
+    ViewData["Title"] = User.IsInRole("Admin") ? "Manage Bookings" : "My Bookings";
+    bool hasCancelledBookings = Model.Any(b => b.BookingStatus == "Cancelled");
+}
+
+<h1 class="mb-4">
+    @(User.IsInRole("Admin") ? "Manage Bookings" : "My Bookings")
+</h1>
+
+<p class="text-muted">
+    @(User.IsInRole("Admin")
+        ? "View and manage all member class bookings."
+        : "View, edit, or cancel your own class bookings.")
+</p>
+
+<p>
+    <a asp-action="Create" class="btn btn-warning mb-3">
+        Book a Class
+    </a>
+</p>
+@if (User.IsInRole("Admin") && hasCancelledBookings)
+{
+    <form asp-action="DeleteCancelledBookings"
+          method="post"
+          class="mb-3">
+
+        <button type="submit"
+                class="btn btn-danger"
+                onclick="return confirm('Are you sure you want to permanently delete all cancelled bookings?');">
+            Delete Cancelled Bookings
+        </button>
+
+    </form>
+}
+<table class="table table-hover shadow-sm bg-white">
+    <thead>
+        <tr>
+            @if (User.IsInRole("Admin"))
+            {
+                <th>Member Name</th>
+            }
+
+            <th>Booked Class</th>
+            <th>Class Date</th>
+            <th>Class Time</th>
+            <th>Instructor</th>
+            <th>Difficulty</th>
+            <th>Booking Date</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>@item.MemberName</td>
+                }
+
+                <td>
+                    @if (item.GymClass != null)
+                    {
+                        @item.GymClass.ClassName
+                    }
+                </td>
+
+                <td>
+                    @if (item.GymClass != null)
+                    {
+                        @item.GymClass.ClassDate.ToShortDateString()
+                    }
+                </td>
+
+                <td>
+                    @if (item.GymClass != null)
+                    {
+                        @item.GymClass.StartTime @:- @item.GymClass.EndTime
+                    }
+                </td>
+
+                <td>
+                    @if (item.GymClass != null)
+                    {
+                        @item.GymClass.Instructor
+                    }
+                </td>
+
+                <td>
+                    @if (item.GymClass != null)
+                    {
+                        @item.GymClass.DifficultyLevel
+                    }
+                </td>
+
+                <td>@item.BookingDate.ToShortDateString()</td>
+
+                <td>
+                    @if (item.BookingStatus == "Confirmed")
+                    {
+                        <span class="badge bg-success">Confirmed</span>
+                    }
+                    else if (item.BookingStatus == "Cancelled")
+                    {
+                        <span class="badge bg-danger">Cancelled</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">@item.BookingStatus</span>
+                    }
+                </td>
+
+                <td>
+                    @if (item.BookingStatus != "Cancelled")
+                    {
+                        <a asp-action="Edit"
+                           asp-route-id="@item.BookingId"
+                           class="btn btn-sm btn-outline-primary">
+                            Edit
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@item.BookingId"
+                           class="btn btn-sm btn-outline-danger">
+                            Cancel
+                        </a>
+                    }
+
+                    <a asp-action="Details"
+                       asp-route-id="@item.BookingId"
+                       class="btn btn-sm btn-outline-secondary">
+                        Details
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,114 @@
+﻿@model GymHub.Models.Membership
+
+@{
+    ViewData["Title"] = "Edit Membership";
+}
+
+<h1>Edit Membership</h1>
+
+<h4>Update membership details</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+
+        <form asp-action="Edit">
+
+            <input type="hidden" asp-for="MembershipId" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MemberName" class="control-label">Member Name</label>
+                <input asp-for="MemberName" class="form-control" />
+                <span asp-validation-for="MemberName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MembershipType" class="control-label">Membership Type</label>
+
+                <select asp-for="MembershipType" class="form-control" id="membershipType">
+                    <option value="">-- Select Membership Type --</option>
+                    <option value="Basic">Basic - £19.99 per month</option>
+                    <option value="Premium">Premium - £34.99 per month</option>
+                    <option value="VIP">VIP - £49.99 per month</option>
+                </select>
+
+                <span asp-validation-for="MembershipType" class="text-danger"></span>
+            </div>
+
+            <div class="alert alert-info" id="membershipInfo">
+                Change the membership type to update the price and included services.
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Price" class="control-label">Price</label>
+                <input asp-for="Price" class="form-control" id="price" readonly />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Duration" class="control-label">Duration Days</label>
+                <input asp-for="Duration" class="form-control" readonly />
+                <span asp-validation-for="Duration" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="StartDate" class="control-label">Start Date</label>
+                <input asp-for="StartDate" class="form-control" type="date" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Status" class="control-label">Status</label>
+                <select asp-for="Status" class="form-control">
+                    <option value="Active">Active</option>
+                    <option value="Expired">Expired</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Save Changes" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function updateMembershipDetails() {
+            var selectedType = document.getElementById("membershipType").value;
+            var priceInput = document.getElementById("price");
+            var infoBox = document.getElementById("membershipInfo");
+
+            if (selectedType === "Basic") {
+                priceInput.value = "19.99";
+                infoBox.innerHTML = "Basic includes gym access during standard opening hours.";
+            }
+            else if (selectedType === "Premium") {
+                priceInput.value = "34.99";
+                infoBox.innerHTML = "Premium includes gym access, group classes, and fitness content.";
+            }
+            else if (selectedType === "VIP") {
+                priceInput.value = "49.99";
+                infoBox.innerHTML = "VIP includes all Premium features, personal trainer support, and priority class booking.";
+            }
+            else {
+                priceInput.value = "";
+                infoBox.innerHTML = "Please select a membership type to see what is included.";
+            }
+        }
+
+        document.getElementById("membershipType").addEventListener("change", updateMembershipDetails);
+        updateMembershipDetails();
+    </script>
+}

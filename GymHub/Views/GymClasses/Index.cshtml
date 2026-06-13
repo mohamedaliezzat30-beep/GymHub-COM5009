@@ -1,0 +1,77 @@
+﻿@model IEnumerable<GymHub.Models.GymClass>
+
+@{
+    ViewData["Title"] = "Class Schedule";
+}
+
+<h1 class="mb-4">Class Schedule</h1>
+
+<p class="text-muted">
+    View the gym classes currently available to members.
+</p>
+
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-success">
+            Add Scheduled Class
+        </a>
+    </p>
+}
+
+<table class="table table-hover shadow-sm bg-white">
+    <thead>
+        <tr>
+            <th>Class Name</th>
+            <th>Date</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Instructor</th>
+            <th>Difficulty</th>
+            <th>Capacity</th>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <th></th>
+            }
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ClassName</td>
+                <td>@item.ClassDate.ToShortDateString()</td>
+                <td>@item.StartTime</td>
+                <td>@item.EndTime</td>
+                <td>@item.Instructor</td>
+                <td>@item.DifficultyLevel</td>
+                <td>@item.Capacity</td>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+                        <a asp-action="Edit"
+                           asp-route-id="@item.GymClassId"
+                           class="btn btn-sm btn-outline-primary">
+                            Edit
+                        </a>
+
+                        <a asp-action="Details"
+                           asp-route-id="@item.GymClassId"
+                           class="btn btn-sm btn-outline-secondary">
+                            Details
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@item.GymClassId"
+                           class="btn btn-sm btn-outline-danger">
+                            Delete
+                        </a>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

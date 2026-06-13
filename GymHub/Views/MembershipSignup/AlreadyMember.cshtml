@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Already a Member";
+}
+
+<div class="text-center mt-5">
+    <div class="card shadow-sm p-5">
+        <h1>You already have an active membership</h1>
+
+        <p class="lead">
+            Your GymHub membership is currently active, so you do not need to join again.
+        </p>
+
+        <p class="text-muted">
+            You can now view the class schedule or book a class.
+        </p>
+
+        <a asp-controller="GymClasses"
+           asp-action="Index"
+           class="btn btn-success">
+            View Class Schedule
+        </a>
+
+        <a asp-controller="Bookings"
+           asp-action="Create"
+           class="btn btn-warning">
+            Book a Class
+        </a>
+    </div>
+</div>

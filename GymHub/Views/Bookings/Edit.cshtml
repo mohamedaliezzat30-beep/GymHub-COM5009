@@ -1,0 +1,61 @@
+﻿@model GymHub.Models.Booking
+
+@{
+    ViewData["Title"] = "Edit Booking";
+}
+
+<h1 class="mb-3">Edit Booking</h1>
+
+<p class="text-muted">
+    Change the scheduled class for this booking.
+</p>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+
+        <form asp-action="Edit">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="BookingId" />
+
+            <div class="alert alert-info">
+                <strong>Member:</strong> @Model.MemberName
+                <br />
+                <strong>Current Status:</strong> @Model.BookingStatus
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="GymClassId" class="control-label">Select New Class</label>
+
+                <select asp-for="GymClassId"
+                        class="form-control"
+                        asp-items="ViewBag.GymClassId">
+                </select>
+
+                <span asp-validation-for="GymClassId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit"
+                       value="Save Changes"
+                       class="btn btn-warning" />
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Back to My Bookings
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

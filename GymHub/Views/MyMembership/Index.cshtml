@@ -1,0 +1,170 @@
+﻿@model GymHub.Models.Membership?
+
+@{
+    ViewData["Title"] = "My Membership";
+}
+
+<h1 class="mb-4">My Membership</h1>
+
+@if (Model == null)
+{
+    <div class="alert alert-warning">
+        You do not currently have an active GymHub membership.
+    </div>
+
+    <a asp-controller="MembershipSignup"
+       asp-action="Join"
+       class="btn btn-primary">
+        Join GymHub
+    </a>
+}
+else
+{
+    var expiryDate = Model.StartDate.AddDays(Model.Duration);
+    var daysRemaining = (expiryDate - DateTime.Today).Days;
+
+    int currentLevel = Model.MembershipType == "Basic" ? 1 :
+                       Model.MembershipType == "Premium" ? 2 : 3;
+
+    var plans = new[]
+    {
+        new { Name = "Basic", Price = "£19.99/month", Description = "Gym access and fitness content.", Level = 1 },
+        new { Name = "Premium", Price = "£34.99/month", Description = "Gym access, class bookings, and fitness content.", Level = 2 },
+        new { Name = "VIP", Price = "£49.99/month", Description = "Priority booking, trainer support, and all Premium features.", Level = 3 }
+    };
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <h2>@Model.MembershipType Membership</h2>
+
+            <p class="text-muted">
+                Welcome, @Model.MemberName. Your membership is currently active.
+            </p>
+
+            <table class="table">
+                <tr>
+                    <th>Member Name</th>
+                    <td>@Model.MemberName</td>
+                </tr>
+
+                <tr>
+                    <th>Membership Type</th>
+                    <td>@Model.MembershipType</td>
+                </tr>
+
+                <tr>
+                    <th>Price</th>
+                    <td>£@Model.Price</td>
+                </tr>
+
+                <tr>
+                    <th>Start Date</th>
+                    <td>@Model.StartDate.ToShortDateString()</td>
+                </tr>
+
+                <tr>
+                    <th>Expiry Date</th>
+                    <td>@expiryDate.ToShortDateString()</td>
+                </tr>
+
+                <tr>
+                    <th>Days Remaining</th>
+                    <td>
+                        @if (daysRemaining > 0)
+                        {
+                            <span class="badge bg-info">@daysRemaining days</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Expired</span>
+                        }
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Status</th>
+                    <td>
+                        @if (Model.Status == "Active")
+                        {
+                            <span class="badge bg-success">@Model.Status</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">@Model.Status</span>
+                        }
+                    </td>
+                </tr>
+            </table>
+
+            <a asp-controller="GymClasses"
+               asp-action="Index"
+               class="btn btn-success">
+                View Class Schedule
+            </a>
+
+            @if (Model.MembershipType == "Premium" || Model.MembershipType == "VIP")
+            {
+                <a asp-controller="Bookings"
+                   asp-action="Create"
+                   class="btn btn-warning">
+                    Book a Class
+                </a>
+            }
+            else
+            {
+                <span class="badge bg-secondary ms-2">
+                    Class booking requires Premium or VIP
+                </span>
+            }
+
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h3>Change Membership</h3>
+
+            <p class="text-muted">
+                Upgrade or downgrade your membership plan below.
+            </p>
+
+            <div class="row">
+
+                @foreach (var plan in plans)
+                {
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 @(Model.MembershipType == plan.Name ? "border-primary" : "")">
+                            <div class="card-body text-center">
+                                <h4>@plan.Name</h4>
+                                <h5>@plan.Price</h5>
+                                <p>@plan.Description</p>
+
+                                @if (Model.MembershipType == plan.Name)
+                                {
+                                    <span class="badge bg-primary">Current Plan</span>
+                                }
+                                else
+                                {
+                                    var actionText = plan.Level > currentLevel
+                                    ? "Upgrade to " + plan.Name
+                                    : "Downgrade to " + plan.Name;
+
+                                    <form asp-action="ChangeMembership" method="post">
+                                        <input type="hidden" name="membershipType" value="@plan.Name" />
+                                        <button type="submit" class="btn btn-outline-dark">
+                                            @actionText
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+        </div>
+    </div>
+}

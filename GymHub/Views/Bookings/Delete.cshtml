@@ -1,0 +1,92 @@
+﻿@model GymHub.Models.Booking
+
+@{
+    ViewData["Title"] = "Cancel Booking";
+}
+
+<h1 class="mb-3">Cancel Booking</h1>
+
+<div class="alert alert-warning">
+    Are you sure you want to cancel this booking?
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <h4 class="card-title mb-3">
+            Booking Details
+        </h4>
+
+        <hr />
+
+        <dl class="row">
+
+            <dt class="col-sm-3">
+                Member Name
+            </dt>
+
+            <dd class="col-sm-9">
+                @Model.MemberName
+            </dd>
+
+            <dt class="col-sm-3">
+                Class
+            </dt>
+
+            <dd class="col-sm-9">
+                @Model.GymClass?.ClassName
+            </dd>
+
+            <dt class="col-sm-3">
+                Instructor
+            </dt>
+
+            <dd class="col-sm-9">
+                @Model.GymClass?.Instructor
+            </dd>
+
+            <dt class="col-sm-3">
+                Class Date
+            </dt>
+
+            <dd class="col-sm-9">
+                @Model.GymClass?.ClassDate.ToShortDateString()
+            </dd>
+
+            <dt class="col-sm-3">
+                Booking Date
+            </dt>
+
+            <dd class="col-sm-9">
+                @Model.BookingDate.ToShortDateString()
+            </dd>
+
+            <dt class="col-sm-3">
+                Status
+            </dt>
+
+            <dd class="col-sm-9">
+                @Model.BookingStatus
+            </dd>
+
+        </dl>
+
+        <form asp-action="Delete">
+
+            <input type="hidden"
+                   asp-for="BookingId" />
+
+            <button type="submit"
+                    class="btn btn-danger">
+                Confirm Cancellation
+            </button>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+                Back to My Bookings
+            </a>
+
+        </form>
+
+    </div>
+</div>

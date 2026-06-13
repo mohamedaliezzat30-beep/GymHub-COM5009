@@ -1,0 +1,163 @@
+﻿@model GymHub.Models.Membership
+
+@{
+    ViewData["Title"] = "Create Membership";
+}
+
+<h1>Create Membership</h1>
+
+<p class="text-muted">
+    Select one of the available GymHub membership packages. The price will be filled in automatically.
+</p>
+
+<div class="row mb-4">
+
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+                <h3>Basic</h3>
+                <h4>£19.99/month</h4>
+                <p>Standard gym access during opening hours.</p>
+                <ul class="list-unstyled">
+                    <li>Gym equipment access</li>
+                    <li>Standard opening hours</li>
+                    <li>Basic membership support</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-warning">
+            <div class="card-body text-center">
+                <h3>Premium</h3>
+                <h4>£34.99/month</h4>
+                <p>Best option for regular gym users.</p>
+                <ul class="list-unstyled">
+                    <li>Gym access</li>
+                    <li>Group classes included</li>
+                    <li>Fitness content access</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+                <h3>VIP</h3>
+                <h4>£49.99/month</h4>
+                <p>Full access with extra support.</p>
+                <ul class="list-unstyled">
+                    <li>All Premium features</li>
+                    <li>Personal trainer support</li>
+                    <li>Priority class booking</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+
+        <form asp-action="Create">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MemberName" class="control-label">Member Name</label>
+                <input asp-for="MemberName" class="form-control" />
+                <span asp-validation-for="MemberName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MembershipType" class="control-label">Membership Type</label>
+
+                <select asp-for="MembershipType" class="form-control" id="membershipType">
+                    <option value="">-- Select Membership Type --</option>
+                    <option value="Basic">Basic - £19.99 per month</option>
+                    <option value="Premium">Premium - £34.99 per month</option>
+                    <option value="VIP">VIP - £49.99 per month</option>
+                </select>
+
+                <span asp-validation-for="MembershipType" class="text-danger"></span>
+            </div>
+
+            <div class="alert alert-info" id="membershipInfo">
+                Please select a membership type to see what is included.
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Price" class="control-label">Price</label>
+                <input asp-for="Price" class="form-control" id="price" readonly />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Duration" class="control-label">Duration Days</label>
+                <input asp-for="Duration" class="form-control" value="30" readonly />
+                <span asp-validation-for="Duration" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="StartDate" class="control-label">Start Date</label>
+                <input asp-for="StartDate" class="form-control" type="date" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Status" class="control-label">Status</label>
+
+                <select asp-for="Status" class="form-control">
+                    <option value="Active">Active</option>
+                    <option value="Expired">Expired</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Create Membership" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.getElementById("membershipType").addEventListener("change", function () {
+            var selectedType = this.value;
+            var priceInput = document.getElementById("price");
+            var infoBox = document.getElementById("membershipInfo");
+
+            if (selectedType === "Basic") {
+                priceInput.value = "19.99";
+                infoBox.innerHTML = "Basic includes gym equipment access during standard opening hours.";
+            }
+            else if (selectedType === "Premium") {
+                priceInput.value = "34.99";
+                infoBox.innerHTML = "Premium includes gym access, group classes, and fitness content.";
+            }
+            else if (selectedType === "VIP") {
+                priceInput.value = "49.99";
+                infoBox.innerHTML = "VIP includes all Premium features, personal trainer support, and priority class booking.";
+            }
+            else {
+                priceInput.value = "";
+                infoBox.innerHTML = "Please select a membership type to see what is included.";
+            }
+        });
+    </script>
+}
