@@ -6,19 +6,22 @@ GymHub is a gym membership and fitness management system developed for the COM50
 
 ### Member Features
 - Register and login
-- Purchase memberships
-- Upgrade and downgrade memberships
+- Purchase a membership
+- Upgrade or downgrade membership plans
+- View membership details
 - View class schedules
-- Book classes
-- Manage bookings
-- Access fitness content
+- Book available classes
+- Manage existing bookings
+- View fitness content
 
 ### Administrator Features
 - Manage memberships
 - Manage gym classes
 - Manage bookings
 - Manage fitness content
+- Upload fitness images
 - View activity logs
+- Clear activity logs
 
 ## Technologies Used
 
@@ -28,14 +31,18 @@ GymHub is a gym membership and fitness management system developed for the COM50
 - ASP.NET Identity
 - Bootstrap
 
-## Screenshots
+## Project Structure
 
-See the project report for screenshots and system documentation.
+- Controllers: Handles application logic
+- Models: Contains database model classes
+- Views: Contains Razor pages used for the interface
+- Data: Contains database context and seeding logic
+- wwwroot: Contains CSS, JavaScript and uploaded image files
 
 ## Developer
 
 Mohamed Abdelrahman
 
-## GitHub Repository
+## Repository
 
-This repository contains the complete source code for the GymHub project.
+This repository contains the complete source code for the GymHub COM5009 project.
