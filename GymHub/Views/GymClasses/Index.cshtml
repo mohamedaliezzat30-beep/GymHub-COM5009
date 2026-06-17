@@ -1,7 +1,10 @@
-﻿@model IEnumerable<GymHub.Models.GymClass>
+@model IEnumerable<GymHub.Models.GymClass>
 
 @{
     ViewData["Title"] = "Class Schedule";
+
+    var bookingCounts = ViewBag.BookingCounts as Dictionary<int, int>
+        ?? new Dictionary<int, int>();
 }
 
 <h1 class="mb-4">Class Schedule</h1>
@@ -24,11 +27,13 @@
         <tr>
             <th>Class Name</th>
             <th>Date</th>
-            <th>Start Time</th>
-            <th>End Time</th>
+            <th>Time</th>
             <th>Instructor</th>
             <th>Difficulty</th>
             <th>Capacity</th>
+            <th>Booked</th>
+            <th>Remaining</th>
+            <th>Status</th>
 
             @if (User.IsInRole("Admin"))
             {
@@ -40,14 +45,32 @@
     <tbody>
         @foreach (var item in Model)
         {
+            var booked = bookingCounts.ContainsKey(item.GymClassId)
+            ? bookingCounts[item.GymClassId]
+            : 0;
+
+            var remaining = item.Capacity - booked;
+            var isAvailable = remaining > 0;
+
             <tr>
                 <td>@item.ClassName</td>
                 <td>@item.ClassDate.ToShortDateString()</td>
-                <td>@item.StartTime</td>
-                <td>@item.EndTime</td>
+                <td>@item.StartTime - @item.EndTime</td>
                 <td>@item.Instructor</td>
                 <td>@item.DifficultyLevel</td>
                 <td>@item.Capacity</td>
+                <td>@booked</td>
+                <td>@remaining</td>
+                <td>
+                    @if (isAvailable)
+                    {
+                        <span class="badge bg-success">Available</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Full</span>
+                    }
+                </td>
 
                 @if (User.IsInRole("Admin"))
                 {
