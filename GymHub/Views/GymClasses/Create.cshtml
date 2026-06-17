@@ -1,13 +1,13 @@
-﻿@model GymHub.Models.FitnessContent
+@model GymHub.Models.GymClass
 
 @{
-    ViewData["Title"] = "Add Fitness Content";
+    ViewData["Title"] = "Add Scheduled Class";
 }
 
-<h1 class="mb-3">Add Fitness Content</h1>
+<h1 class="mb-3">Add Scheduled Class</h1>
 
 <p class="text-muted">
-    Upload fitness content that members can view.
+    Create a new gym class that members can view and book.
 </p>
 
 <hr />
@@ -15,39 +15,62 @@
 <div class="row">
     <div class="col-md-6">
 
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <form asp-action="Create" method="post">
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group mb-3">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <label asp-for="ClassName" class="control-label"></label>
+                <input asp-for="ClassName" class="form-control" />
+                <span asp-validation-for="ClassName" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <label asp-for="ClassDate" class="control-label"></label>
+                <input asp-for="ClassDate" type="date" class="form-control" />
+                <span asp-validation-for="ClassDate" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">
-                <label class="control-label">Upload Image</label>
-                <input type="file"
-                       name="imageFile"
-                       class="form-control"
-                       accept="image/*" />
-                <span asp-validation-for="ImagePath" class="text-danger"></span>
+                <label asp-for="StartTime" class="control-label"></label>
+                <input asp-for="StartTime" type="time" class="form-control" />
+                <span asp-validation-for="StartTime" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="EndTime" class="control-label"></label>
+                <input asp-for="EndTime" type="time" class="form-control" />
+                <span asp-validation-for="EndTime" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Instructor" class="control-label"></label>
+                <input asp-for="Instructor" class="form-control" />
+                <span asp-validation-for="Instructor" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="DifficultyLevel" class="control-label"></label>
+                <select asp-for="DifficultyLevel" class="form-control">
+                    <option value="">-- Select Difficulty --</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                </select>
+                <span asp-validation-for="DifficultyLevel" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Capacity" class="control-label"></label>
+                <input asp-for="Capacity" type="number" min="1" class="form-control" />
+                <span asp-validation-for="Capacity" class="text-danger"></span>
             </div>
 
             <div class="form-group mt-3">
-                <input type="submit"
-                       value="Add Content"
-                       class="btn btn-success" />
+                <input type="submit" value="Add Class" class="btn btn-success" />
 
-                <a asp-action="Index"
-                   class="btn btn-secondary">
-                    Back to List
+                <a asp-action="Index" class="btn btn-secondary">
+                    Back to Class Schedule
                 </a>
             </div>
 
