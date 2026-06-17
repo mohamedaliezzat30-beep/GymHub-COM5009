@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -47,10 +47,7 @@ namespace GymHub.Controllers
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             string? userEmail = User.Identity?.Name;
 
@@ -58,10 +55,7 @@ namespace GymHub.Controllers
                 .Include(b => b.GymClass)
                 .FirstOrDefaultAsync(m => m.BookingId == id);
 
-            if (booking == null)
-            {
-                return NotFound();
-            }
+            if (booking == null) return NotFound();
 
             if (!User.IsInRole("Admin"))
             {
@@ -105,26 +99,14 @@ namespace GymHub.Controllers
 
             ViewBag.MemberName = membership?.MemberName ?? "Admin";
 
-            ViewData["GymClassId"] = new SelectList(
-                await _context.GymClasses
-                    .OrderBy(g => g.ClassDate)
-                    .Select(g => new
-                    {
-                        g.GymClassId,
-                        ClassDisplay = g.ClassName + " - " +
-                                       g.ClassDate.ToString("dd/MM/yyyy") + " - " +
-                                       g.StartTime
-                    })
-                    .ToListAsync(),
-                "GymClassId",
-                "ClassDisplay");
+            await LoadGymClassesDropDownList();
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GymClassId,BookingDate,BookingStatus")] Booking booking)
+        public async Task<IActionResult> Create([Bind("GymClassId")] Booking booking)
         {
             string? userEmail = User.Identity?.Name;
 
@@ -165,12 +147,15 @@ namespace GymHub.Controllers
             var selectedClass = await _context.GymClasses
                 .FirstOrDefaultAsync(g => g.GymClassId == booking.GymClassId);
 
-            if (selectedClass != null)
+            if (selectedClass == null)
             {
-                int currentBookings = await _context.Bookings
-                    .CountAsync(b =>
-                        b.GymClassId == booking.GymClassId &&
-                        b.BookingStatus == "Confirmed");
+                ModelState.AddModelError("", "Selected class does not exist.");
+            }
+            else
+            {
+                int currentBookings = await _context.Bookings.CountAsync(b =>
+                    b.GymClassId == booking.GymClassId &&
+                    b.BookingStatus == "Confirmed");
 
                 if (currentBookings >= selectedClass.Capacity)
                 {
@@ -184,6 +169,7 @@ namespace GymHub.Controllers
             ModelState.Remove("MemberName");
             ModelState.Remove("BookingDate");
             ModelState.Remove("BookingStatus");
+            ModelState.Remove("GymClass");
 
             if (ModelState.IsValid)
             {
@@ -191,8 +177,8 @@ namespace GymHub.Controllers
 
                 _context.ActivityLogs.Add(new ActivityLog
                 {
-                    UserEmail = membership?.MemberName ?? "Admin",
-                    Action = (membership?.MemberName ?? "Admin") + " booked a class.",
+                    UserEmail = booking.MemberName,
+                    Action = booking.MemberName + " booked a class.",
                     DateCreated = DateTime.Now
                 });
 
@@ -201,32 +187,15 @@ namespace GymHub.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["GymClassId"] = new SelectList(
-                await _context.GymClasses
-                    .OrderBy(g => g.ClassDate)
-                    .Select(g => new
-                    {
-                        g.GymClassId,
-                        ClassDisplay = g.ClassName + " - " +
-                                       g.ClassDate.ToString("dd/MM/yyyy") + " - " +
-                                       g.StartTime
-                    })
-                    .ToListAsync(),
-                "GymClassId",
-                "ClassDisplay",
-                booking.GymClassId);
-
             ViewBag.MemberName = booking.MemberName;
+            await LoadGymClassesDropDownList(booking.GymClassId);
 
             return View(booking);
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             string? userEmail = User.Identity?.Name;
 
@@ -234,10 +203,7 @@ namespace GymHub.Controllers
                 .Include(b => b.GymClass)
                 .FirstOrDefaultAsync(b => b.BookingId == id);
 
-            if (booking == null)
-            {
-                return NotFound();
-            }
+            if (booking == null) return NotFound();
 
             if (!User.IsInRole("Admin"))
             {
@@ -252,29 +218,14 @@ namespace GymHub.Controllers
                 }
             }
 
-            ViewData["GymClassId"] = new SelectList(
-                await _context.GymClasses
-                    .OrderBy(g => g.ClassDate)
-                    .Select(g => new
-                    {
-                        g.GymClassId,
-                        ClassDisplay = g.ClassName + " - " +
-                                       g.ClassDate.ToString("dd/MM/yyyy") + " - " +
-                                       g.StartTime
-                    })
-                    .ToListAsync(),
-                "GymClassId",
-                "ClassDisplay",
-                booking.GymClassId);
+            await LoadGymClassesDropDownList(booking.GymClassId);
 
             return View(booking);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(
-            int id,
-            [Bind("BookingId,GymClassId")] Booking updatedBooking)
+        public async Task<IActionResult> Edit(int id, [Bind("BookingId,GymClassId")] Booking updatedBooking)
         {
             if (id != updatedBooking.BookingId)
             {
@@ -326,28 +277,35 @@ namespace GymHub.Controllers
             var selectedClass = await _context.GymClasses
                 .FirstOrDefaultAsync(g => g.GymClassId == updatedBooking.GymClassId);
 
-            if (selectedClass != null)
+            if (selectedClass == null)
             {
-                int currentBookings = await _context.Bookings
-                    .CountAsync(b =>
-                        b.GymClassId == updatedBooking.GymClassId &&
-                        b.BookingStatus == "Confirmed" &&
-                        b.BookingId != existingBooking.BookingId);
+                ModelState.AddModelError("", "Selected class does not exist.");
+            }
+            else
+            {
+                int currentBookings = await _context.Bookings.CountAsync(b =>
+                    b.GymClassId == updatedBooking.GymClassId &&
+                    b.BookingStatus == "Confirmed" &&
+                    b.BookingId != existingBooking.BookingId);
 
                 if (currentBookings >= selectedClass.Capacity)
                 {
-                    ModelState.AddModelError(
-                        "",
-                        $"Sorry, {selectedClass.ClassName} on {selectedClass.ClassDate.ToShortDateString()} at {selectedClass.StartTime} is fully booked."
-                    );
+                    ModelState.AddModelError("", "This class is fully booked.");
                 }
             }
+
+            ModelState.Remove("MemberName");
+            ModelState.Remove("BookingDate");
+            ModelState.Remove("BookingStatus");
+            ModelState.Remove("GymClass");
 
             if (ModelState.IsValid)
             {
                 existingBooking.GymClassId = updatedBooking.GymClassId;
                 existingBooking.BookingDate = DateTime.Now;
                 existingBooking.BookingStatus = "Confirmed";
+
+                _context.Bookings.Update(existingBooking);
 
                 _context.ActivityLogs.Add(new ActivityLog
                 {
@@ -358,33 +316,21 @@ namespace GymHub.Controllers
 
                 await _context.SaveChangesAsync();
 
+                TempData["Success"] = "Booking updated successfully.";
+
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["GymClassId"] = new SelectList(
-                await _context.GymClasses
-                    .OrderBy(g => g.ClassDate)
-                    .Select(g => new
-                    {
-                        g.GymClassId,
-                        ClassDisplay = g.ClassName + " - " +
-                                       g.ClassDate.ToString("dd/MM/yyyy") + " - " +
-                                       g.StartTime
-                    })
-                    .ToListAsync(),
-                "GymClassId",
-                "ClassDisplay",
-                updatedBooking.GymClassId);
+            existingBooking.GymClassId = updatedBooking.GymClassId;
+
+            await LoadGymClassesDropDownList(updatedBooking.GymClassId);
 
             return View(existingBooking);
         }
 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             string? userEmail = User.Identity?.Name;
 
@@ -392,10 +338,7 @@ namespace GymHub.Controllers
                 .Include(b => b.GymClass)
                 .FirstOrDefaultAsync(m => m.BookingId == id);
 
-            if (booking == null)
-            {
-                return NotFound();
-            }
+            if (booking == null) return NotFound();
 
             if (!User.IsInRole("Admin"))
             {
@@ -477,6 +420,25 @@ namespace GymHub.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task LoadGymClassesDropDownList(int? selectedGymClassId = null)
+        {
+            ViewData["GymClassId"] = new SelectList(
+                await _context.GymClasses
+                    .OrderBy(g => g.ClassDate)
+                    .ThenBy(g => g.StartTime)
+                    .Select(g => new
+                    {
+                        g.GymClassId,
+                        ClassDisplay = g.ClassName + " - " +
+                                       g.ClassDate.ToString("dd/MM/yyyy") + " - " +
+                                       g.StartTime
+                    })
+                    .ToListAsync(),
+                "GymClassId",
+                "ClassDisplay",
+                selectedGymClassId);
         }
 
         private bool BookingExists(int id)
