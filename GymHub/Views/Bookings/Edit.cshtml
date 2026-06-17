@@ -1,4 +1,4 @@
-﻿@model GymHub.Models.Booking
+@model GymHub.Models.Booking
 
 @{
     ViewData["Title"] = "Edit Booking";
@@ -15,7 +15,12 @@
 <div class="row">
     <div class="col-md-6">
 
-        <form asp-action="Edit">
+        <form asp-action="Edit"
+              asp-controller="Bookings"
+              asp-route-id="@Model.BookingId"
+              method="post">
+
+            @Html.AntiForgeryToken()
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -28,7 +33,9 @@
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="GymClassId" class="control-label">Select New Class</label>
+                <label asp-for="GymClassId" class="control-label">
+                    Select New Class
+                </label>
 
                 <select asp-for="GymClassId"
                         class="form-control"
@@ -39,11 +46,12 @@
             </div>
 
             <div class="form-group mt-3">
-                <input type="submit"
-                       value="Save Changes"
-                       class="btn btn-warning" />
+                <button type="submit" class="btn btn-warning">
+                    Save Changes
+                </button>
 
                 <a asp-action="Index"
+                   asp-controller="Bookings"
                    class="btn btn-secondary">
                     Back to My Bookings
                 </a>
